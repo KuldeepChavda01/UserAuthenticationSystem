@@ -1,25 +1,41 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// Initial state of the auth slice
 const initialState = {
   users: [],
   currentUser: null,
   isAuthenticated: false,
 };
 
-// Create the slice
+const handleRegister = (state, action) => {
+  state.users.push(action.payload);
+};
+
+const handleLogin = (state, action) => {
+  const credentials = action.payload;
+  const user = state.users.find(
+    (u) => u.email === credentials.email && u.password === credentials.password
+  );
+  if (user) {
+    state.currentUser = user;
+    state.isAuthenticated = true;
+  }
+};
+
+const handleLogout = (state) => {
+  state.currentUser = null;
+  state.isAuthenticated = false;
+};
+
 const authSlice = createSlice({
-  name: "auth", // name of the slice, used for action type prefixes
-  initialState, // starting state of this slice
+  name: "auth",
+  initialState,
   reducers: {
-    registerUser: () => {},
-    loginUser: () => {},
-    logoutUser: () => {},
+    registerUser: handleRegister,
+    loginUser: handleLogin,
+    logoutUser: handleLogout,
   },
 });
 
-// First export
 export const { registerUser, loginUser, logoutUser } = authSlice.actions;
 
-// Final export
 export default authSlice.reducer;
